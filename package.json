@@ -1,0 +1,24 @@
+{
+  "name": "week11-hangman",
+  "version": "1.0.0",
+  "description": "created using node.js",
+  "main": "main.js",
+  "dependencies": {
+    "inquirer": "^1.2.2",
+    "is-letter": "^1.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zlouis/week11-hangman.git"
+  },
+  "author": "Louis huang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zlouis/week11-hangman/issues"
+  },
+  "homepage": "https://github.com/zlouis/week11-hangman#readme"
+}

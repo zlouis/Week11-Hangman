@@ -1,61 +1,134 @@
-// require prompt to use to make the game 
+//require inquirer
+var inquirer = require('inquirer');
+var isLetter = require('is-letter');
+//require objects/exports
+var Word = require('./word.js');
+var Game = require('./game.js');
 
-//require the objects/exports you will use
+var hangman = {
+  wordBank: Game.newWord.wordList,
+  wordsWon: 0,
+  guessesRemaining: 10,
+  //empty array to hold letters guessed by user. And checks if the user guessed the letter already
+  guessedLetters: [],
+  currentWord: null,
+  //asks user if they are ready to play
+  startGame: function() {
+    var that = this;
+    //clears guessedLetters before a new game starts if it's not already empty.
+    if(this.guessedLetters.length > 0){
+      this.guessedLetters = [];
+    }
 
-prompt.start();
+    inquirer.prompt([{
+      name: "play",
+      type: "confirm",
+      message: "Insert floppy disc?"
+    }]).then(function(answer) {
+      if(answer.play){
+        that.newGame();
+      } else{
+        console.log("Ejecting Floppy disk... disconnecting from modem.. terminating power grid connection.. rolling back time to 2016");
+      }
+    })},
+  //if they want to play starts new game.
+  newGame: function() {
+    if(this.guessesRemaining === 10) {
+      console.log('========================');
+      console.log('|    LOADING BENDER    |');
+      console.log('|    SYSTEM BOOTING    |');
+      console.log('|  Beep BAP BOOP Beep  |');
+      console.log('|  "DOWN WITH HUMANS!" |');
+      console.log('========================');
+      //generates random number based on the wordBank
+      var randNumber = Math.floor(Math.random()*this.wordBank.length);
+      this.currentWord = new Word(this.wordBank[randNumber]);
+      this.currentWord.getLets();
+      //displays current word as blanks.
+      console.log(this.currentWord.wordRender());
+      this.keepPromptingUser();
+    } else{
+      this.resetGuessesRemaining();
+      this.newGame();
+    }
+  },
+  resetGuessesRemaining: function() {
+    this.guessesRemaining = 10;
+  },
+  keepPromptingUser : function(){
+    var that = this;
+    //asks player for a letter
+    inquirer.prompt([{
+      name: "chosenLtr",
+      type: "input",
+      message: "Choose a letter:",
+      validate: function(value) {
+        if(isLetter(value)){
+          return true;
+        } else{
+          return false;
+        }
+      }
+    }]).then(function(ltr) {
+     
 
-game = {
-	wordBank : // create or import a list of words
-	wordsWon : // count of words Found
-	guessesRemaining : 10, //per word
-	currentWrd : null, //the word object
-	startGame : function (wrd){
-		//make sure the user has 10 guesses
+      //toUpperCase because words in word bank are all caps
+      var letterReturned = (ltr.chosenLtr).toUpperCase();
 
-		//get a random word from the array
-
-		//populate currentWrd (made from Word constructor function) object with letters
-
-		this.keepPromptingUser();
-
-	}, 
-	resetGuessesRemaining : function(){
-    // reset guess count for new game	
-	},
-	keepPromptingUser : function(){
-		var self = this;
-
-		prompt.get(['guessLetter'], function(err, result) {
-		    // result is an object like this: { guessLetter: 'f' }
-		    //console.log(result);
-		    
-			  // console log the letetr you chose
-
-		    //this checks if the letter was found and if it is then it sets that specific letter in the word to be found
-
-		    //if the user guessed incorrectly minus the number of guesses they have left
-				// and console.log if they were incorrect or correct
-		    	
-				//check if you win only when you are right
-        //end game
-			 
-		    
-		    // display the user how many guesses remaining
-			
-				// render the word 
-				
-				// display letters the user has guessed
-
-			  // if user has remaining guesses and Word isn't found
-			
-				// if user has no guesses left, show them the word and tell them they lost
-			
-				// else show the user word and rendered
-		    
-		});
-	}
+      //adds to the guessedLetters array if it isn't already there
+      var guessedAlready = false;
+      var guessedLetters=[];
+  ///WORKS UP TO HERE!!!!!!!!!!!!!!!!!!///
+        for(var i = 0; i<that.guessedLetters.length; i++){
+          if(letterReturned === guessedLetters[i]){
+            guessedAlready = true;
+          }
+        }
+        if(guessedAlready === false){
+          that.guessedLetters.push(letterReturned);
+          console.log('You Chose: ' + letterReturned);
+          console.log('Guesses Remaining: ' + that.guessesRemaining)
+          console.log('Letter Bank: ' + that.guessedLetters)
+          that.keepPromptingUser();
 
 
-};
+        } else{
+          //otherwise it re-prompts the user to pick another letter.
+          console.log("You've guessed that letter already. Try again.")
 
-game.startGame();
+          that.keepPromptingUser();
+        }
+
+      var found = that.currentWord.checkIfLetterFound(letterReturned);
+      //if none were found tell user they were wrong
+      if(found === 0){
+        console.log('Nope! You guessed wrong.');
+        that.guessesRemaining--;
+        console.log('Guesses remaining: ' + that.guessesRemaining);
+        console.log(that.currentWrd.wordRender());
+        that.keepPromptingUser();
+      } else{
+        console.log('Yes! You guessed right!');
+          //checks to see if user won
+          if(that.currentWord.didWeFindTheWord === true){
+            console.log('Congratulations! You defeated Bender!!!');
+            that.startGame();
+          } else{
+            // display the user how many guesses remaining
+            console.log('Guesses remaining: ' + that.guessesRemaining);
+            console.log(that.currentWrd.wordRender());
+          }
+      }
+      if(that.guessesRemaining > 0 && that.currentWord.wordFound === false) {
+        that.keepPromptingUser();
+      }else if(that.guessesRemaining === 0){
+        console.log('Game over! Bender wins!');
+        console.log('The word you were guessing was: ' + that.currentWord.word);
+      } else{
+        console.log(that.currentWord.wordRender());
+      }
+    });
+  }
+}
+
+hangman.startGame();

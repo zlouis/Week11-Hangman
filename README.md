@@ -1,3 +1,4 @@
 # Week11-Hangman
 
-Create hangman game that runs in node.js
+
+A hangman game that runs off of node.js

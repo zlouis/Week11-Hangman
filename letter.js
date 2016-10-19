@@ -20,3 +20,4 @@ var Letter = function(ltr) {
 
 // export to use in word.js
 module.exports = Letter;
+

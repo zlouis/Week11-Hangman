@@ -80,7 +80,8 @@ var hangman = {
 
       //adds to the guessedLetters array if it isn't already there
       var guessedAlready = false;
-      guessedLetters=[];
+      this.guessedLetters=[];
+
 
   ///WORKS UP TO HERE!!!!!!!!!!!!!!!!!!///
         for(var i = 0; i<that.guessedLetters.length; i++){
@@ -89,10 +90,10 @@ var hangman = {
           }
         }
         if(guessedAlready === false){
-          guessedLetters.push(letterReturned);
+          that.guessedLetters.push(letterReturned);
           console.log('You Chose: ' + letterReturned);
           console.log('Guesses Remaining: ' + that.guessesRemaining)
-          console.log('Letter Bank: ' + guessedLetters)
+          console.log('Letters Used: ' + that.guessedLetters)
          
 
 
@@ -110,13 +111,13 @@ var hangman = {
         that.guessesRemaining--;
         console.log('Guesses remaining: ' + that.guessesRemaining);
         console.log(that.currentWord.wordRender());
-        that.keepPromptingUser();
+        // that.keepPromptingUser();
       } else{
         console.log('Yes! You guessed right!');
           //checks to see if user won
           if(that.currentWord.didWeFindTheWord() === true){
             console.log('Congratulations! You defeated Bender!!!');
-            //that.startGame();
+            that.startGame();
           } else{
             // display the user how many guesses remaining
             console.log('Guesses remaining: ' + that.guessesRemaining);
@@ -128,6 +129,7 @@ var hangman = {
       }else if(that.guessesRemaining === 0){
         console.log('Game over! Bender wins!');
         console.log('The word you were guessing was: ' + that.currentWord.word);
+         that.startGame();
       } else{
         console.log(that.currentWord.wordRender());
       }

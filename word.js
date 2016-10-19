@@ -19,30 +19,24 @@ function Word(wrd) {
 
   //found the current word
   this.didWeFindTheWord = function() {
-    var stillBlank = false;
-    //checks to see if there are any blanks
-    for(var i=0; i<that.letters.length; i++) {
-      if(that.letters[i] == ' _ '){
-        var stillBlank = true;
-      }
-    }
-    //if there are no blanks, word has been found!
-    if(stillBlank!=true){
+    if(this.letters.every(function(lttr){
+      return lttr.appear === true;
+    })){
       this.wordFound = true;
+      return true;
     }
 
-    return this.wordFound;
   };
 
   this.checkIfLetterFound = function(guessedLetter) {
     var whatToReturn = 0;
-      //iterates through the collection of letter Objects.
-      for(var i = 0; i<that.letters.length; i++){
-        if(that.letters[i] === that.guessedLetter) {
-          that.letters[i].appear = true;
-          whatToReturn = 1;
-        }
+    //iterates through each letter to see if it matches the guessed letter
+    this.letters.forEach(function(lttr){
+      if(lttr.letter === guessedLetter){
+        lttr.appear = true;
+        whatToReturn++;
       }
+    })
     //if guessLetter matches Letter property, the letter object should be shown
     return whatToReturn;
   };
